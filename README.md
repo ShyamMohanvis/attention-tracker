@@ -13,7 +13,7 @@ Attention Tracker uses your webcam to watch your eyes and automatically controls
 
 ## Live Showcase & Architecture
 
-- **Project Web Portal / Simulator**: Hosted on GitHub Pages (`https://<username>.github.io/attention-tracker/`)
+- **Project Web Portal / Simulator**: Hosted on GitHub Pages: [https://shyammohanvis.github.io/attention-tracker/](https://shyammohanvis.github.io/attention-tracker/)
 - **Interactive Gaze Demo**: Visual demonstration of iris vector estimation, sliding smoothing window, and playback state machine transitions.
 
 ---
@@ -68,7 +68,7 @@ Webcam → MediaPipe FaceMesh (468 landmarks) → Iris Localization (indices 468
 ### 1. Clone & create virtual environment
 
 ```powershell
-git clone <repository-url>
+git clone https://github.com/ShyamMohanvis/attention-tracker.git
 cd attention-tracker
 python -m venv venv
 .\venv\Scripts\Activate.ps1
