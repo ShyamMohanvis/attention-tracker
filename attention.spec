@@ -19,6 +19,7 @@ a = Analysis(
         (str(SRC / "settings.json"),        "."),
         (str(SRC / "ui" / "icons"),         "ui/icons"),
         (str(SRC / "assets"),               "assets"),
+        ("README_INSTALL.txt",              "."),
         # MediaPipe model files
         (mediapipe_dir,                     "mediapipe"),
     ],

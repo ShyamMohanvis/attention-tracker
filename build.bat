@@ -40,7 +40,22 @@ echo [Build] Running PyInstaller...
 "%PYINST%" "%ROOT%attention.spec" --noconfirm
 if errorlevel 1 (echo [ERROR] PyInstaller failed && exit /b 1)
 
+if not exist "%ROOT%dist\AttentionTracker\AttentionTracker.exe" (
+    echo [ERROR] AttentionTracker.exe not found at %ROOT%dist\AttentionTracker\AttentionTracker.exe
+    exit /b 1
+)
+if not exist "%ROOT%dist\AttentionTracker\assets\face_landmarker.task" (
+    echo [ERROR] Model asset not found at %ROOT%dist\AttentionTracker\assets\face_landmarker.task
+    exit /b 1
+)
+
+REM ── Package ZIP ──────────────────────────────────────────────────────────────
+echo [Package] Packaging AttentionTracker-Windows.zip...
+powershell -NoProfile -Command "Compress-Archive -Path '%ROOT%dist\AttentionTracker' -DestinationPath '%ROOT%dist\AttentionTracker-Windows.zip' -Force"
+if errorlevel 1 (echo [ERROR] Packaging failed && exit /b 1)
+
 echo ==================================================
-echo   BUILD SUCCESSFUL
-echo   Output: %ROOT%dist\AttentionTracker\AttentionTracker.exe
+echo   BUILD & PACKAGING SUCCESSFUL
+echo   Output:  %ROOT%dist\AttentionTracker\AttentionTracker.exe
+echo   Package: %ROOT%dist\AttentionTracker-Windows.zip
 echo ==================================================

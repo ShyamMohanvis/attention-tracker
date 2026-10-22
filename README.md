@@ -13,6 +13,34 @@ Attention Tracker uses your webcam to watch your eyes and automatically controls
 
 ---
 
+## 📥 Download for Windows (x64)
+
+[![Download for Windows](https://img.shields.io/badge/Download-AttentionTracker--Windows.zip-0078d4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/ShyamMohanvis/attention-tracker/releases/latest/download/AttentionTracker-Windows.zip)
+[![Latest Release](https://img.shields.io/github/v/release/ShyamMohanvis/attention-tracker?style=for-the-badge&color=success)](https://github.com/ShyamMohanvis/attention-tracker/releases/latest)
+
+- **Latest Release**: `v1.0.0`
+- **Supported Operating Systems**: Windows 10 (Build 1903+) or Windows 11 (64-bit)
+- **Direct Download**: [**AttentionTracker-Windows.zip**](https://github.com/ShyamMohanvis/attention-tracker/releases/latest/download/AttentionTracker-Windows.zip) *(Public download — no GitHub account required)*
+- **Browse All Releases & Notes**: [GitHub Releases History](https://github.com/ShyamMohanvis/attention-tracker/releases)
+
+### 🚀 First-Run & Installation Instructions:
+1. **Extract All Files**: Download `AttentionTracker-Windows.zip`, right-click it, and choose **Extract All...** to a folder on your drive (e.g. `C:\Users\<You>\AttentionTracker`).
+   > [!IMPORTANT]
+   > Do **not** run `AttentionTracker.exe` directly from inside the ZIP file! It must be extracted completely so its `_internal` DLL dependencies can be accessed.
+2. **Launch Application**: Open the extracted folder and double-click **`AttentionTracker.exe`**.
+3. **Windows SmartScreen Note**:
+   Attention Tracker is a free, open-source project and is not signed with an enterprise commercial certificate. If Windows SmartScreen displays *"Windows protected your PC"*:
+   - Click **More info**.
+   - Click **Run anyway**.
+4. **Grant Webcam Access**: Ensure Windows Camera privacy settings permit desktop applications to access your webcam.
+5. **Calibrate Gaze**: Run the 3-second calibration wizard for both displays, and click Start Tracking!
+
+### 🔧 Troubleshooting:
+- **Camera Device Busy**: Make sure video calling software (Zoom, Teams, Google Meet, OBS) is not actively locking your webcam.
+- **Media Playback Not Responding**: Ensure your browser or desktop media player (Chrome, Spotify, VLC) allows background media transport control.
+
+---
+
 ## Live Showcase & Architecture
 
 - **Project Web Portal / Simulator**: Hosted on GitHub Pages: [https://shyammohanvis.github.io/attention-tracker/](https://shyammohanvis.github.io/attention-tracker/)

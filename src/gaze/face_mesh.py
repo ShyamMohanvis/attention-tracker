@@ -11,6 +11,7 @@ NormalizedLandmark objects per face (indices 0-467 = face, 468-477 = iris).
 
 from __future__ import annotations
 
+import sys
 import time
 import urllib.request
 from pathlib import Path
@@ -27,8 +28,27 @@ from utils.logger import get_logger
 log = get_logger("face_mesh")
 
 # ── Model file ────────────────────────────────────────────────────────────────
-_ASSETS_DIR = Path(__file__).parent.parent / "assets"
-_MODEL_PATH = _ASSETS_DIR / "face_landmarker.task"
+def _resolve_model_path() -> tuple[Path, Path]:
+    """Resolve the directory and path for face_landmarker.task."""
+    # 1. PyInstaller _internal or parent assets
+    candidate_dirs = [
+        Path(__file__).parent.parent / "assets",
+    ]
+    if getattr(sys, "frozen", False):
+        candidate_dirs.insert(0, Path(sys.executable).parent / "assets")
+        if hasattr(sys, "_MEIPASS"):
+            candidate_dirs.insert(0, Path(sys._MEIPASS) / "assets")
+
+    for d in candidate_dirs:
+        model_file = d / "face_landmarker.task"
+        if model_file.exists():
+            return d, model_file
+
+    default_dir = candidate_dirs[0]
+    return default_dir, default_dir / "face_landmarker.task"
+
+
+_ASSETS_DIR, _MODEL_PATH = _resolve_model_path()
 _MODEL_URL = (
     "https://storage.googleapis.com/mediapipe-models/"
     "face_landmarker/face_landmarker/float16/latest/face_landmarker.task"
@@ -37,6 +57,8 @@ _MODEL_URL = (
 
 def _ensure_model() -> None:
     """Download the face landmarker model if not already present."""
+    global _ASSETS_DIR, _MODEL_PATH
+    _ASSETS_DIR, _MODEL_PATH = _resolve_model_path()
     if _MODEL_PATH.exists():
         return
     _ASSETS_DIR.mkdir(parents=True, exist_ok=True)

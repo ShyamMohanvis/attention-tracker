@@ -489,6 +489,149 @@
     footer a:hover {
       color: var(--accent);
     }
+
+    /* ── Download Section ── */
+    .download-card {
+      background: linear-gradient(180deg, rgba(18, 22, 31, 0.9) 0%, rgba(10, 12, 16, 0.98) 100%);
+      border: 1px solid var(--border-focus);
+      box-shadow: 0 12px 40px rgba(56, 189, 248, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-lg);
+      padding: 44px 32px;
+      text-align: center;
+      position: relative;
+      margin-bottom: 50px;
+    }
+
+    .download-badge {
+      display: inline-block;
+      padding: 5px 14px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--accent);
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .download-card h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .download-desc {
+      color: var(--text-muted);
+      max-width: 650px;
+      margin: 0 auto 28px;
+      font-size: 1.05rem;
+    }
+
+    .download-action-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .btn-large {
+      padding: 14px 32px;
+      font-size: 1.1rem;
+      border-radius: var(--radius-md);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35);
+    }
+
+    .btn-large:hover {
+      box-shadow: 0 8px 28px rgba(56, 189, 248, 0.5);
+    }
+
+    .download-meta {
+      display: flex;
+      gap: 12px;
+      color: var(--text-dim);
+      font-size: 0.88rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .install-steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
+      margin: 28px 0;
+      text-align: left;
+    }
+
+    .install-step {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .install-num {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #0284c7);
+      color: #04101d;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.9rem;
+    }
+
+    .install-text strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+
+    .install-text p {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.45;
+    }
+
+    .install-text code {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--accent);
+    }
+
+    .download-links-footer {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .download-links-footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .download-links-footer a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -504,6 +647,9 @@
         <a href="#how-it-works" id="nav-how">Pipeline</a>
         <a href="#features" id="nav-features">Features</a>
         <a href="#quickstart" id="nav-quickstart">Quick Start</a>
+        <a href="#download" id="nav-download-btn" class="btn btn-primary" style="padding: 7px 14px; font-size: 0.85rem;">
+          ⬇️ Download
+        </a>
         <a href="https://github.com/ShyamMohanvis/attention-tracker" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" id="nav-github-link">
           GitHub Repo
         </a>
@@ -525,12 +671,78 @@
         Attention Tracker uses your webcam and MediaPipe computer vision to track iris gaze vectors in real-time, automatically controlling Windows media playback based on your active screen focus.
       </p>
       <div class="hero-cta">
-        <a href="#interactive-demo" class="btn btn-primary" id="btn-try-demo">
-          Try Interactive Simulation
+        <a href="https://github.com/ShyamMohanvis/attention-tracker/releases/latest/download/AttentionTracker-Windows.zip" class="btn btn-primary btn-large" id="btn-hero-download">
+          <span style="font-size: 1.25rem;">⬇️</span> Download for Windows (x64)
         </a>
-        <a href="#quickstart" class="btn btn-secondary" id="btn-view-quickstart">
-          Setup Instructions
+        <a href="#interactive-demo" class="btn btn-secondary" id="btn-try-demo">
+          Try Live Simulation
         </a>
+        <a href="#download" class="btn btn-secondary" id="btn-view-quickstart">
+          Release Details (v1.0.0)
+        </a>
+      </div>
+    </section>
+
+    <!-- Dedicated Public Download Section -->
+    <section class="container" id="download">
+      <div class="download-card">
+        <div class="download-badge">Official Release • v1.0.0 • No Sign-in Required</div>
+        <h2>Download Attention Tracker for Windows</h2>
+        <p class="download-desc">
+          Get the self-contained desktop utility. Bundled with embedded MediaPipe FaceMesh &amp; Iris computer vision models and Windows Media Session API controller.
+        </p>
+
+        <div class="download-action-box">
+          <a href="https://github.com/ShyamMohanvis/attention-tracker/releases/latest/download/AttentionTracker-Windows.zip" class="btn btn-primary btn-large" id="btn-main-download">
+            <span style="font-size: 1.4rem;">⬇️</span>
+            <div style="text-align: left;">
+              <div style="font-weight: 700; font-size: 1.15rem;">Download for Windows</div>
+              <div style="font-size: 0.82rem; opacity: 0.85;">AttentionTracker-Windows.zip • 64-bit • Free &amp; Open Source</div>
+            </div>
+          </a>
+
+          <div class="download-meta">
+            <span>✅ Windows 10 / 11 (64-bit)</span>
+            <span>•</span>
+            <span>Direct Public Download (No Login Required)</span>
+            <span>•</span>
+            <span>Requires Webcam</span>
+          </div>
+        </div>
+
+        <div class="install-steps-grid">
+          <div class="install-step">
+            <div class="install-num">1</div>
+            <div class="install-text">
+              <strong>Extract the ZIP</strong>
+              <p>Right-click <code>AttentionTracker-Windows.zip</code> and select <em>Extract All...</em> before running.</p>
+            </div>
+          </div>
+          <div class="install-step">
+            <div class="install-num">2</div>
+            <div class="install-text">
+              <strong>Launch AttentionTracker.exe</strong>
+              <p>Open the extracted folder and double-click <code>AttentionTracker.exe</code>.</p>
+            </div>
+          </div>
+          <div class="install-step">
+            <div class="install-num">3</div>
+            <div class="install-text">
+              <strong>SmartScreen Note</strong>
+              <p>As an unsigned community open-source app, click <em>More info</em> &rarr; <em>Run anyway</em> if prompted.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="download-links-footer">
+          <a href="https://github.com/ShyamMohanvis/attention-tracker/releases" target="_blank" rel="noopener noreferrer" id="link-all-releases">
+            📜 Browse All GitHub Releases
+          </a>
+          <span>&bull;</span>
+          <a href="https://github.com/ShyamMohanvis/attention-tracker/releases/tag/v1.0.0" target="_blank" rel="noopener noreferrer" id="link-release-notes">
+            🏷️ View v1.0.0 Release Notes
+          </a>
+        </div>
       </div>
     </section>
 

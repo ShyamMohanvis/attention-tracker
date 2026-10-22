@@ -3,12 +3,13 @@ name: CI & Build Windows Executable
 on:
   push:
     branches: [ "main" ]
+    tags: [ "v*" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   test:
@@ -58,9 +59,41 @@ jobs:
         run: |
           pyinstaller attention.spec --noconfirm
 
-      - name: Archive Executable
+      - name: Validate Binary & Required Assets
+        shell: pwsh
         run: |
-          Compress-Archive -Path dist\AttentionTracker\* -DestinationPath dist\AttentionTracker-Windows.zip
+          $exe = "dist\AttentionTracker\AttentionTracker.exe"
+          $assetInternal = "dist\AttentionTracker\_internal\assets\face_landmarker.task"
+          $assetRoot = "dist\AttentionTracker\assets\face_landmarker.task"
+          $installDoc = "dist\AttentionTracker\README_INSTALL.txt"
+
+          if (-not (Test-Path $exe)) {
+            Write-Error "CRITICAL: AttentionTracker.exe was not found at $exe"
+            exit 1
+          }
+          if ((-not (Test-Path $assetInternal)) -and (-not (Test-Path $assetRoot))) {
+            Write-Error "CRITICAL: MediaPipe face_landmarker.task was not found"
+            exit 1
+          }
+          if ((Test-Path $assetInternal) -and (-not (Test-Path $assetRoot))) {
+            New-Item -ItemType Directory -Force -Path "dist\AttentionTracker\assets" | Out-Null
+            Copy-Item $assetInternal -Destination $assetRoot -Force
+          }
+          if (Test-Path "README_INSTALL.txt") {
+            Copy-Item "README_INSTALL.txt" -Destination "dist\AttentionTracker\README_INSTALL.txt" -Force
+          }
+          Write-Host "All distributable files and assets validated successfully."
+
+      - name: Package Distributable ZIP
+        shell: pwsh
+        run: |
+          Compress-Archive -Path dist\AttentionTracker -DestinationPath dist\AttentionTracker-Windows.zip -Force
+          if (-not (Test-Path "dist\AttentionTracker-Windows.zip")) {
+            Write-Error "Failed to generate AttentionTracker-Windows.zip"
+            exit 1
+          }
+          Write-Host "Package created: dist\AttentionTracker-Windows.zip"
+          tar -tf dist\AttentionTracker-Windows.zip | Select-Object -First 10
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
@@ -68,3 +101,31 @@ jobs:
           name: AttentionTracker-Windows
           path: dist/AttentionTracker-Windows.zip
           retention-days: 14
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/AttentionTracker-Windows.zip
+          name: Attention Tracker ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          body: |
+            ## 👁 Attention Tracker ${{ github.ref_name }} (Windows 64-bit)
+
+            > **Pause media when you look away. Resume when you look back.**
+
+            ### 📦 Download Instructions:
+            1. Download **`AttentionTracker-Windows.zip`** from the Assets below.
+            2. Extract the complete ZIP archive to a folder of your choice (e.g. `C:\Program Files\AttentionTracker` or `C:\Users\<You>\AttentionTracker`).
+            3. Open the extracted folder and double-click **`AttentionTracker.exe`**.
+            4. **Windows SmartScreen Note**: Because Attention Tracker is free, open-source software and not signed with an expensive enterprise certificate, Windows may show a protective banner:
+               - Click **More info**
+               - Click **Run anyway**
+            5. Follow the 3-second camera calibration wizard to start gaze-aware media control!
+
+            ### 💻 System Requirements:
+            - **OS**: Windows 10 (Build 1903+) or Windows 11 (64-bit)
+            - **Hardware**: Standard integrated or USB webcam
+            - **Supported Media Players**: Chrome, Edge, Spotify, VLC, Windows Media Player
