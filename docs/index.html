@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Attention Tracker — An intelligent Windows desktop utility that tracks your gaze using MediaPipe and OpenCV, automatically pausing media when you look away and resuming when you return.">
+  <meta name="keywords" content="attention-tracker, gaze-tracking, mediapipe, opencv, python, pyside6, windows-media, computer-vision">
+  <title>Attention Tracker — Intelligent Gaze-Aware Media Controller</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0c10;
+      --bg-secondary: #12161f;
+      --bg-tertiary: #1a202c;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --accent-secondary: #818cf8;
+      --accent-success: #34d399;
+      --accent-warning: #fbbf24;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(56, 189, 248, 0.4);
+      --card-bg: rgba(18, 22, 31, 0.7);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.15), transparent),
+        radial-gradient(circle at 85% 30%, rgba(129, 140, 248, 0.08), transparent);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    header {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 12, 16, 0.85);
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #0284c7);
+      color: #04101d;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border-color: var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--border-focus);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .pill-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 50px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4.2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #ffffff 30%, var(--accent) 70%, var(--accent-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 36px;
+      font-weight: 400;
+    }
+
+    .hero-cta {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* Interactive Simulation */
+    .interactive-section {
+      margin: 40px 0 80px;
+    }
+
+    .sim-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .sim-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .sim-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sim-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      background: rgba(52, 211, 153, 0.1);
+      color: var(--accent-success);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .sim-status.paused {
+      background: rgba(251, 191, 36, 0.1);
+      color: var(--accent-warning);
+      border-color: rgba(251, 191, 36, 0.3);
+    }
+
+    .sim-stage {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 768px) {
+      .sim-stage {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .monitor-box {
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      background: rgba(0, 0, 0, 0.25);
+      text-align: center;
+      position: relative;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .monitor-box.active {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.05);
+      box-shadow: 0 0 24px var(--accent-glow);
+    }
+
+    .monitor-screen {
+      aspect-ratio: 16/9;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-subtle);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .media-indicator {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .monitor-box.active .media-indicator {
+      transform: scale(1.1);
+    }
+
+    .user-avatar-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .eyes-canvas-container {
+      width: 120px;
+      height: 60px;
+      background: #000;
+      border-radius: 30px;
+      border: 2px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 16px;
+      margin-bottom: 12px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+    }
+
+    .eye {
+      width: 32px;
+      height: 32px;
+      background: #ffffff;
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .pupil {
+      width: 16px;
+      height: 16px;
+      background: #0284c7;
+      border-radius: 50%;
+      position: absolute;
+      transition: transform 0.15s ease-out;
+    }
+
+    .pupil-center {
+      width: 6px;
+      height: 6px;
+      background: #000;
+      border-radius: 50%;
+      position: absolute;
+      top: 5px;
+      left: 5px;
+    }
+
+    .sim-controls {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    /* Pipeline Flow */
+    .pipeline-section {
+      padding: 60px 0;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .section-desc {
+      text-align: center;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .pipeline-step {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      position: relative;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .pipeline-step:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-focus);
+    }
+
+    .step-num {
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .step-name {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .step-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 28px;
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Code block */
+    .code-card {
+      background: #06080d;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 40px 0;
+      margin-top: 80px;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header>
+    <div class="container nav-inner">
+      <a href="#" class="logo-badge" id="nav-logo">
+        <div class="logo-icon">👁</div>
+        <span>Attention Tracker</span>
+      </a>
+      <div class="nav-links">
+        <a href="#how-it-works" id="nav-how">Pipeline</a>
+        <a href="#features" id="nav-features">Features</a>
+        <a href="#quickstart" id="nav-quickstart">Quick Start</a>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" id="nav-github-link">
+          GitHub Repo
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero container">
+      <div class="pill-tag" id="hero-badge">
+        <span>Windows Media Intelligent Automation</span>
+      </div>
+      <h1>
+        Pause media when you <span class="gradient-text">look away</span>.<br>
+        Resume when you look back.
+      </h1>
+      <p class="hero-sub">
+        Attention Tracker uses your webcam and MediaPipe computer vision to track iris gaze vectors in real-time, automatically controlling Windows media playback based on your active screen focus.
+      </p>
+      <div class="hero-cta">
+        <a href="#interactive-demo" class="btn btn-primary" id="btn-try-demo">
+          Try Interactive Simulation
+        </a>
+        <a href="#quickstart" class="btn btn-secondary" id="btn-view-quickstart">
+          Setup Instructions
+        </a>
+      </div>
+    </section>
+
+    <!-- Interactive Gaze Simulation Section -->
+    <section class="container interactive-section" id="interactive-demo">
+      <div class="sim-card">
+        <div class="sim-header">
+          <div class="sim-title">
+            <span>🎮 Live Gaze &amp; Playback Simulator</span>
+          </div>
+          <div class="sim-status" id="sim-status-badge">
+            <span id="sim-status-dot">●</span>
+            <span id="sim-status-text">STATE: PLAYING (Looking at Monitor 1)</span>
+          </div>
+        </div>
+
+        <div class="sim-stage">
+          <!-- Monitor 1 (Video) -->
+          <div class="monitor-box active" id="sim-monitor-1" onclick="simulateGaze('monitor1')">
+            <div class="monitor-screen" id="screen-1">
+              <div class="media-indicator" id="media-icon">▶️</div>
+              <strong style="color: var(--accent);">Monitor 1 (Video Host)</strong>
+              <small style="color: var(--text-dim);" id="media-state-text">Media Playing</small>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Click to look here (Active Video Screen)</p>
+          </div>
+
+          <!-- Virtual User / Eyes -->
+          <div class="user-avatar-zone">
+            <div class="eyes-canvas-container">
+              <div class="eye">
+                <div class="pupil" id="left-pupil">
+                  <div class="pupil-center"></div>
+                </div>
+              </div>
+              <div class="eye">
+                <div class="pupil" id="right-pupil">
+                  <div class="pupil-center"></div>
+                </div>
+              </div>
+            </div>
+            <span style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-dim);" id="gaze-vector-text">gaze_x: -0.65</span>
+          </div>
+
+          <!-- Monitor 2 (Work / Docs) -->
+          <div class="monitor-box" id="sim-monitor-2" onclick="simulateGaze('monitor2')">
+            <div class="monitor-screen" id="screen-2">
+              <div class="media-indicator" style="opacity: 0.6;">📄</div>
+              <strong>Monitor 2 (Work / Notes)</strong>
+              <small style="color: var(--text-dim);">Secondary Display</small>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Click to look away</p>
+          </div>
+        </div>
+
+        <div class="sim-controls">
+          <button class="btn btn-secondary" onclick="simulateGaze('monitor1')" id="btn-look-video">
+            👀 Look at Video Screen (Resume)
+          </button>
+          <button class="btn btn-secondary" onclick="simulateGaze('monitor2')" id="btn-look-away">
+            ↪️ Look Away to Monitor 2 (Pause)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture / Pipeline -->
+    <section class="container pipeline-section" id="how-it-works">
+      <h2 class="section-title">End-to-End Tracking Pipeline</h2>
+      <p class="section-desc">From raw webcam frames to Windows Media Session commands in under 15ms latency.</p>
+      
+      <div class="pipeline-grid">
+        <div class="pipeline-step">
+          <div class="step-num">STAGE 01</div>
+          <div class="step-name">Webcam Stream</div>
+          <div class="step-desc">OpenCV captures camera stream at 30 FPS with automated hardware index detection.</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-num">STAGE 02</div>
+          <div class="step-name">MediaPipe FaceMesh</div>
+          <div class="step-desc">Extracts 468 facial landmarks + 10 dedicated iris landmarks (indices 468–477).</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-num">STAGE 03</div>
+          <div class="step-name">Head Pose + Iris Vector</div>
+          <div class="step-desc">solvePnP projects 3D canonical face landmarks to compute normalized horizontal gaze vector.</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-num">STAGE 04</div>
+          <div class="step-name">Sliding Smoother</div>
+          <div class="step-desc">20-frame circular buffer eliminates jitter, micro-saccades, and sudden eye blinks.</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-num">STAGE 05</div>
+          <div class="step-name">Nearest Centroid</div>
+          <div class="step-desc">Classifies current gaze against calibration centroids saved during initial setup wizard.</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="step-num">STAGE 06</div>
+          <div class="step-name">State Machine</div>
+          <div class="step-desc">Dwell timers ensure stable transitions before triggering Windows Media Session or media key events.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Features -->
+    <section class="container pipeline-section" id="features">
+      <h2 class="section-title">Built for Real-World Productivity</h2>
+      <p class="section-desc">Engineered for low resource overhead and native Windows desktop integration.</p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <h3>Calibration Wizard</h3>
+          <p>Guided 3-second gaze capture on each screen calculates optimal separation threshold tailored to your physical desk setup.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔊</div>
+          <h3>Windows Media Session API</h3>
+          <p>Controls Spotify, YouTube in Chrome/Edge, VLC, and Windows Media Player natively, without requiring the window to have active focus.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⏱️</div>
+          <h3>Configurable Dwell Delays</h3>
+          <p>Prevent accidental interruptions when glancing away briefly with configurable pause and resume debounce timers.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🪟</div>
+          <h3>System Tray Minimization</h3>
+          <p>Runs quietly in the background without cluttering your taskbar. Double-click the tray icon to open settings anytime.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔌</div>
+          <h3>Pluggable Media Controllers</h3>
+          <p>Easily extendable controller architecture. Add custom control logic for any media player with simple inheritance.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Self-Contained Executable</h3>
+          <p>Standalone PyInstaller packaging with embedded MediaPipe assets — no global Python runtime required for end users.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Start -->
+    <section class="container pipeline-section" id="quickstart">
+      <h2 class="section-title">Quick Start &amp; Local Setup</h2>
+      <p class="section-desc">Run directly from source or compile to a standalone Windows executable.</p>
+
+      <div class="code-card">
+# Clone the repository
+git clone https://github.com/PixieDigitalCreatives/attention-tracker.git
+cd attention-tracker
+
+# Create and activate virtual environment
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+
+# Install required dependencies
+pip install -r requirements.txt
+
+# Run the test suite
+pytest tests -v
+
+# Launch the desktop application
+python src/app.py
+
+# Optional: Build standalone Windows binary
+.\build.ps1
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Attention Tracker &bull; MIT License &bull; Designed &amp; Developed with Python, PySide6 &amp; MediaPipe</p>
+    </div>
+  </footer>
+
+  <script>
+    let currentState = 'PLAYING';
+    let timeoutId = null;
+
+    function simulateGaze(target) {
+      const leftPupil = document.getElementById('left-pupil');
+      const rightPupil = document.getElementById('right-pupil');
+      const gazeText = document.getElementById('gaze-vector-text');
+      const badge = document.getElementById('sim-status-badge');
+      const statusText = document.getElementById('sim-status-text');
+      const mediaIcon = document.getElementById('media-icon');
+      const mediaText = document.getElementById('media-state-text');
+      const m1 = document.getElementById('sim-monitor-1');
+      const m2 = document.getElementById('sim-monitor-2');
+
+      if (target === 'monitor1') {
+        // Look at monitor 1 (left)
+        leftPupil.style.transform = 'translate(-6px, 0)';
+        rightPupil.style.transform = 'translate(-6px, 0)';
+        gazeText.textContent = 'gaze_x: -0.68 (Target: Monitor 1)';
+        m1.classList.add('active');
+        m2.classList.remove('active');
+
+        clearTimeout(timeoutId);
+        // Resume delay simulation (300ms)
+        timeoutId = setTimeout(() => {
+          currentState = 'PLAYING';
+          badge.className = 'sim-status';
+          statusText.textContent = 'STATE: PLAYING (Active)';
+          mediaIcon.textContent = '▶️';
+          mediaText.textContent = 'Media Playing';
+          mediaText.style.color = 'var(--accent-success)';
+        }, 300);
+
+      } else {
+        // Look at monitor 2 (right)
+        leftPupil.style.transform = 'translate(6px, 0)';
+        rightPupil.style.transform = 'translate(6px, 0)';
+        gazeText.textContent = 'gaze_x: +0.62 (Target: Monitor 2)';
+        m2.classList.add('active');
+        m1.classList.remove('active');
+
+        clearTimeout(timeoutId);
+        // Pause delay simulation (1000ms dwell)
+        statusText.textContent = 'DWELLING AWAY...';
+        timeoutId = setTimeout(() => {
+          currentState = 'PAUSED';
+          badge.className = 'sim-status paused';
+          statusText.textContent = 'STATE: PAUSED (Looked away)';
+          mediaIcon.textContent = '⏸️';
+          mediaText.textContent = 'Media Paused';
+          mediaText.style.color = 'var(--accent-warning)';
+        }, 800);
+      }
+    }
+  </script>
+</body>
+</html>

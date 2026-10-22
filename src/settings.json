@@ -1,0 +1,17 @@
+{
+  "video_monitor": 1,
+  "pause_delay": 1.0,
+  "resume_delay": 0.3,
+  "confidence": 0.85,
+  "fps": 30,
+  "camera_index": 0,
+  "smoothing_window": 20,
+  "calibrated": false,
+  "calibration_monitor1": [],
+  "calibration_monitor2": [],
+  "controller_priority": [
+    "windows_media_session",
+    "media_key",
+    "focused_window"
+  ]
+}
