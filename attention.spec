@@ -5,19 +5,22 @@
 # Output: dist/AttentionTracker/AttentionTracker.exe
 
 from pathlib import Path
+import mediapipe
 
 SRC = Path("src")
+mediapipe_dir = str(Path(mediapipe.__file__).parent)
 
 a = Analysis(
     [str(SRC / "app.py")],
     pathex=[str(SRC)],
     binaries=[],
     datas=[
-        # Settings and icons bundled into the exe
+        # Settings, icons, and assets bundled into the exe
         (str(SRC / "settings.json"),        "."),
         (str(SRC / "ui" / "icons"),         "ui/icons"),
+        (str(SRC / "assets"),               "assets"),
         # MediaPipe model files
-        ("venv/Lib/site-packages/mediapipe", "mediapipe"),
+        (mediapipe_dir,                     "mediapipe"),
     ],
     hiddenimports=[
         # MediaPipe / OpenCV internals
