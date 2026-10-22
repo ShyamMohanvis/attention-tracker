@@ -6,6 +6,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-0078d4.svg)](https://www.microsoft.com/windows)
 [![Tests](https://img.shields.io/badge/tests-26%20passed-success.svg)](tests/)
+[![CI & Build](https://github.com/ShyamMohanvis/attention-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/ShyamMohanvis/attention-tracker/actions/workflows/ci.yml)
+[![Pages Deployment](https://github.com/ShyamMohanvis/attention-tracker/actions/workflows/pages.yml/badge.svg)](https://shyammohanvis.github.io/attention-tracker/)
 
 Attention Tracker uses your webcam to watch your eyes and automatically controls media playback based on which monitor you're looking at. Built with MediaPipe, OpenCV, and PySide6.
 
@@ -149,14 +151,14 @@ Attention Tracker persists configuration locally in `src/settings.json`. It does
 Because Attention Tracker is a Windows desktop application interacting directly with physical webcams and Windows audio/video APIs, deployment consists of two independent pipelines:
 
 1. **Automated Binary Release (GitHub Actions)**:
-   - Configured in `.github/workflows/ci.yml`.
+   - Configured in [.github/workflows/ci.yml](.github/workflows/ci.yml) &bull; [View CI Workflow Runs](https://github.com/ShyamMohanvis/attention-tracker/actions/workflows/ci.yml)
    - Runs on `windows-latest`.
    - Executes the full `pytest` suite.
    - Compiles the self-contained `AttentionTracker.exe` via PyInstaller.
    - Packages and uploads `AttentionTracker-Windows.zip` as a workflow artifact.
 
 2. **Web Portal & Documentation (GitHub Pages)**:
-   - Configured in `.github/workflows/pages.yml`.
+   - Configured in [.github/workflows/pages.yml](.github/workflows/pages.yml) &bull; [Live Website](https://shyammohanvis.github.io/attention-tracker/)
    - Automatically builds and publishes the interactive web showcase from `docs/index.html`.
 
 ---

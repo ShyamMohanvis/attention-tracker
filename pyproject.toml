@@ -22,6 +22,12 @@ dependencies = [
 [project.scripts]
 attention-tracker = "app:main"
 
+[project.urls]
+Homepage = "https://shyammohanvis.github.io/attention-tracker/"
+Documentation = "https://shyammohanvis.github.io/attention-tracker/"
+Repository = "https://github.com/ShyamMohanvis/attention-tracker"
+Issues = "https://github.com/ShyamMohanvis/attention-tracker/issues"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=8.2.0",
